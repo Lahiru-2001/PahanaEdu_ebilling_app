@@ -33,26 +33,38 @@
 
 
     <!-- JSTL (includes taglib implementation) -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <version>1.2</version>
-    </dependency>
+<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
+    <version>1.2</version>
+</dependency>
 
-    <!-- Gson for JSON handling -->
+		<!-- Gson for JSON handling -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.11.0</version>
     </dependency>
 
-    <!-- MySQL Connector (if you also need MySQL) -->
+		<!-- MySQL Connector (if you also need MySQL) -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>8.0.33</version>
     </dependency>
+    
+    <dependency>
+  <groupId>org.mindrot</groupId>
+  <artifactId>jbcrypt</artifactId>
+  <version>0.4</version>
+</dependency>
+
+   
+
   </dependencies>
+  
+  
   <build>
     <finalName>PahanaEdu_Book_app</finalName>
   </build>

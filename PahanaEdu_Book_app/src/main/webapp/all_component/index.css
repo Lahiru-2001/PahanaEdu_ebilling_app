@@ -1,0 +1,77 @@
+/* Logo image size */
+.navbar-brand img {
+	height: 40px;
+	width: auto;
+}
+
+/* Brand name next to logo */
+.brand-text {
+	color: #000000;
+	font-weight: bold;
+	font-size: 30px;
+	margin-left: 15px;
+}
+
+/* Nav links */
+.navbar-nav .nav-link {
+	font-weight: bold;
+	font-size: 20px;
+	color: black !important;
+	transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+	color: #004466 !important;
+}
+
+/* Style for search input */
+form[role="search"] .form-control {
+	width: 200px;
+}
+
+/* Search button customization */
+.navbar-nav .btn.btn-outline-primary {
+	border-color: white;
+	color: white;
+}
+
+/* Align navbar content */
+#navbarRight {
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+}
+
+/* Login/Register spacing */
+.ms-4.d-flex a {
+	white-space: nowrap;
+}
+
+/* Optional spacing */
+.dropdown .bi-person-circle {
+	font-size: 1.3rem;
+}
+
+/* Responsive design */
+@media ( max-width : 991.98px) {
+	#navbarRight {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.navbar-nav {
+		flex-direction: column;
+		gap: 10px;
+	}
+	.ms-4.d-flex {
+		margin-top: 10px;
+		flex-direction: column;
+		gap: 10px;
+	}
+	form[role="search"] {
+		margin-top: 10px;
+		width: 100%;
+	}
+	form[role="search"] .form-control {
+		width: 100%;
+	}
+}
