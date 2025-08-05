@@ -5,8 +5,7 @@ import org.mindrot.jbcrypt.BCrypt;
 public class PasswordUtil {
 	// Hash a plain password
 	public static String hashPassword(String plain) {
-
-		return BCrypt.hashpw(plain, BCrypt.gensalt(12)); // cost 12
+		return BCrypt.hashpw(plain, BCrypt.gensalt(12));
 	}
 
 	// verify

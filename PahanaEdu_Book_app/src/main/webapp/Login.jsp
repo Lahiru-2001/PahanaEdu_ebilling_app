@@ -19,10 +19,7 @@
 </style>
 
 <body>
-	<!-- nav_bar start -->
 	<%@include file="all_component/navbar.jsp"%>
-	<!-- nav_bar end -->
-
 
 	<div class="container mt-5">
 		<div class="row justify-content-center">
@@ -31,26 +28,43 @@
 					<div class="card-body">
 						<h4 class="text-center mb-4">Login</h4>
 
-						<form id="loginForm" novalidate>
+						<%
+						String error = (String) request.getAttribute("loginError");
+						if (error != null) {
+						%>
+						<div class="alert alert-danger">
+							<%=error%>
+						</div>
+						<%
+						}
+						%>
+
+						<form id="loginForm" action="usrs_login" method="post" novalidate>
 
 							<div class="mb-3">
-								<label for="user_name" class="form-label">User Name</label> <input
-									class="form-control" type="text" id="user_name"
-									name="user_name" required>
+								<label for="username" class="form-label">User Name</label> <input
+									class="form-control" type="text" id="username" name="username"
+									required>
 								<div class="invalid-feedback">User name is required.</div>
 							</div>
 
 							<div class="mb-3">
 								<label for="password" class="form-label">Password</label> <input
 									class="form-control" type="password" id="password"
-									name="password" minlength="6" required>
-								<div class="invalid-feedback">Password must be at least 6
+									name="password" minlength="4" required>
+								<div class="invalid-feedback">Password must be at least 4
 									characters.</div>
 							</div>
 
-
-							<input type="hidden" id="action" name="action" value="login">
+							<input type="hidden" name="action" value="login">
 							<button type="submit" class="btn btn-info w-100">Login</button>
+							<br>
+							<br>
+
+							<div class="text">
+								<a href="register.jsp">Create New Account</a>
+							</div>
+
 						</form>
 
 					</div>
@@ -59,10 +73,7 @@
 		</div>
 	</div>
 
-
-	<!-- footer start -->
 	<%@include file="all_component/footer.jsp"%>
-	<!-- footer end -->
 
 	<script>
 		document.getElementById('loginForm').addEventListener('submit',
@@ -75,7 +86,6 @@
 					form.classList.add('was-validated');
 				});
 	</script>
-
 
 </body>
 </html>

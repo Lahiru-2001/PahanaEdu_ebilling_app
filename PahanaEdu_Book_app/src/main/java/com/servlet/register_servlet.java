@@ -88,7 +88,7 @@ public class register_servlet extends HttpServlet {
 		Connection con = null;
 		try {
 			// Get database connection
-			con = DBConnecter.getcon();
+			con = DBConnecter.getConnection();
 			con.setAutoCommit(false); // Start transaction
 
 			// Initialize DAO classes
