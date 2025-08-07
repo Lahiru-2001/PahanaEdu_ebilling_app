@@ -120,7 +120,7 @@
 											<tr>
 												<th scope="col">Name</th>
 												<th scope="col">Description</th>
-												<th scope="col">Category</th>
+												<th scope="col">Category</th> 
 												<th scope="col">Price</th>
 												<th scope="col">Stock Quantity</th>
 												<th scope="col">Image</th>
