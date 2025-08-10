@@ -14,59 +14,60 @@ import com.entity.Item;
 @WebServlet("/edit_item")
 @MultipartConfig
 public class EditItemServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        try {
-            int itemId = Integer.parseInt(request.getParameter("item_id"));
-            String name = request.getParameter("name");
-            String description = request.getParameter("description");
-            String category = request.getParameter("category");
-            BigDecimal price = new BigDecimal(request.getParameter("price"));
-            int stock = Integer.parseInt(request.getParameter("stock_quantity"));
+		try {
+			int itemId = Integer.parseInt(request.getParameter("item_id"));
+			String name = request.getParameter("name");
+			String description = request.getParameter("description");
+			String category = request.getParameter("category");
+			BigDecimal price = new BigDecimal(request.getParameter("price"));
+			int stock = Integer.parseInt(request.getParameter("stock_quantity"));
 
-            Part filePart = request.getPart("image");
-            String imagePath;
-            String existingImage = request.getParameter("existing_image");
+			Part filePart = request.getPart("image");
+			String imagePath;
+			String existingImage = request.getParameter("existing_image");
 
-            if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null) {
-                String fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
-                String uploadPath = getServletContext().getRealPath("/") + "item_images";
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) uploadDir.mkdir();
+			if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null) {
+				String fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
+				String uploadPath = getServletContext().getRealPath("/") + "item_images";
+				File uploadDir = new File(uploadPath);
+				if (!uploadDir.exists())
+					uploadDir.mkdir();
 
-                filePart.write(uploadPath + File.separator + fileName);
-                imagePath = "item_images/" + fileName;
-            } else {
-                imagePath = existingImage;
-            }
+				filePart.write(uploadPath + File.separator + fileName);
+				imagePath = "item_images/" + fileName;
+			} else {
+				imagePath = existingImage;
+			}
 
-            Item item = new Item();
-            item.setItem_id(itemId);
-            item.setName(name);
-            item.setDescription(description);
-            item.setCategory(category);
-            item.setPrice(price);
-            item.setStock_quantity(stock);
-            item.setImage(imagePath);
-            item.setStatus("active");
+			Item item = new Item();
+			item.setItem_id(itemId);
+			item.setName(name);
+			item.setDescription(description);
+			item.setCategory(category);
+			item.setPrice(price);
+			item.setStock_quantity(stock);
+			item.setImage(imagePath);
+			item.setStatus("active");
 
-            ItemDAO dao = new ItemDAOImple(DBConnecter.getConnection());
-            boolean result = dao.updateItem(item);
+			ItemDAO dao = new ItemDAOImple(DBConnecter.getConnection());
+			boolean result = dao.updateItem(item);
 
-            if (result) {
-                request.setAttribute("success", "Item updated successfully.");
-            } else {
-                request.setAttribute("error", "Failed to update item.");
-            }
+			if (result) {
+				request.setAttribute("success", "Item updated successfully.");
+			} else {
+				request.setAttribute("error", "Failed to update item.");
+			}
 
-            request.setAttribute("item", item);
-            request.getRequestDispatcher("Admin_Edit_Items.jsp").forward(request, response);
+			request.setAttribute("item", item);
+			request.getRequestDispatcher("Admin_Edit_Items.jsp").forward(request, response);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Error: " + e.getMessage());
-            request.getRequestDispatcher("Admin_Edit_Items.jsp").forward(request, response);
-        }
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("error", "Error: " + e.getMessage());
+			request.getRequestDispatcher("Admin_Edit_Items.jsp").forward(request, response);
+		}
+	}
 }

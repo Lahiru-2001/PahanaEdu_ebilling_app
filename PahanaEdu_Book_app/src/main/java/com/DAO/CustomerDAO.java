@@ -1,5 +1,7 @@
 package com.DAO;
 
+import java.util.List;
+
 import com.entity.Customer;
 
 public interface CustomerDAO {
@@ -8,4 +10,5 @@ public interface CustomerDAO {
 	boolean createCustomer(Customer customer) throws Exception;
 
 	Customer getCustomerByUserId(int userId) throws Exception;
+
 }

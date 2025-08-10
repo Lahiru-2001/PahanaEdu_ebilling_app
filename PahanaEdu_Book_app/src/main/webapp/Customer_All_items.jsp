@@ -15,9 +15,6 @@
 
 	<%@include file="all_component/navbar.jsp"%>
 
-
-
-
 	<div class="content">
 		<div class="card">
 			<div class="card-body">
@@ -296,21 +293,7 @@
 
 	</div>
 
-
-
-
-
-
-
-
-
 	<%@include file="all_component/footer.jsp"%>
-
-
-
-
-
-
 
 </body>
 </html>

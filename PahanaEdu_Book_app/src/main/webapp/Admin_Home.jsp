@@ -14,10 +14,9 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Admin Home Page</title>
+<title>Admin-Home Page</title>
 </head>
 <body data-topbar="colored" data-layout="horizontal">
-
 
 
 	<%@include file="all_component/navbar.jsp"%>

@@ -21,3 +21,4 @@
 
 <link rel="stylesheet" href="all_component/index.css">
 <link rel="stylesheet" href="all_component/customer.css">
+<link rel="stylesheet" href="all_component/About_Us.css">

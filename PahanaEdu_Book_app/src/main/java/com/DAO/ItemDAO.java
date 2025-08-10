@@ -13,8 +13,7 @@ public interface ItemDAO {
 	Item getItemById(int item_id) throws Exception;
 
 	boolean deleteItemById(int item_id) throws Exception;
-	
-	boolean updateItem(Item item) throws Exception;
 
+	boolean updateItem(Item item) throws Exception;
 
 }

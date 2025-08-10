@@ -1,6 +1,7 @@
-<%@ page import="java.util.*, com.entity.Item" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.*, com.entity.Item"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page session="true"%>
 
 <%@ page import="java.sql.Connection"%>
@@ -20,7 +21,7 @@
 	rel="stylesheet">
 
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Customer-Home Page</title>
 </head>
 <style>
 </style>
@@ -90,22 +91,18 @@
 									type="radio" name="radio-btn" id="radio3"> <input
 									type="radio" name="radio-btn" id="radio4">
 
-								<!-- Slides -->
 								<div class="slides">
 									<div class="slide first">
-										<a href="#"><img src="images/home.jpg" alt="Slide 1"></a>
+										<a href="#"><img src="images/sideshow1.png" alt="Slide 1"></a>
 									</div>
 									<div class="slide">
-										<a href="#"><img src="images/lockscreen.jpg" alt="Slide 2"></a>
+										<a href="#"><img src="images/sideshow2.jpg" alt="Slide 2"></a>
 									</div>
 									<div class="slide">
-										<a href="#"><img
-											src="images/sukuna-purple-5120x2880-16958.png" alt="Slide 3"></a>
+										<a href="#"><img src="images/sideshow3.jpg" alt="Slide 3"></a>
 									</div>
 									<div class="slide">
-										<a href="#"><img
-											src="images/wallpapersden.com_horseman-in-forest-dark-night_1920x1080.jpg"
-											alt="Slide 4"></a>
+										<a href="#"><img src="images/sideshow4.png" alt="Slide 4"></a>
 									</div>
 								</div>
 
@@ -132,167 +129,32 @@
 
 
 
+
+
 	<section id="items_sider">
-		<div class="carousel">
-			<h3>All Products</h3>
-			<div class="carousel-inner-wrapper">
-				<div class="carousel-inner" id="carouselItems">
-					<!-- Each .col is a product card -->
-					<div class="col">
+		<div class="container mt-5">
+			<h2 class="text-center mb-4">All Products</h2>
+			<div class="row">
+
+				<c:forEach var="item" items="${items}">
+					<div class="col-md-3 mb-4">
 						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
+							<img src="item_img/${item.image}" class="card-img-top"
+								alt="${item.name}" style="height: 200px; object-fit: cover;">
+							<div class="card-body">
+								<h5 class="card-title">${item.name}</h5>
+								<p class="card-text">
+									<strong>Price:</strong> $${item.price}<br> <strong>Stock:</strong>
+									${item.stock_quantity}<br> <strong>Category:</strong>
+									${item.category}<br> <strong>Description:</strong>
+									${item.description}
+								</p>
+								<button class="btn btn-primary btn-sm">Add to Cart</button>
+							</div>
 						</div>
 					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-					<div class="col">
-						<div class="card shadow">
-							<img src="/w3images/jeans3.jpg" alt="Denim Jeans"
-								style="width: 100%">
-							<h1>Item Name</h1>
-							<p class="price">$19.99</p>
-							<p class="stock_quantity">stock_quantity</p>
-							<p class="category">category</p>
-							<p>description</p>
-							<p>
-								<button>Add to Cart</button>
-							</p>
-						</div>
-					</div>
-				</div>
+				</c:forEach>
+
 			</div>
 		</div>
 
@@ -304,6 +166,7 @@
 	</section>
 
 
+
 	<br>
 
 
@@ -312,22 +175,20 @@
 		<div class="container">
 
 			<div class="item_school_book">
-				<a href="#"> <img src="images/home.jpg" alt="school_book">
+				<a href="#"> <img src="images/Bag_category.jpg"
+					alt="school_book">
 					<div class="text">School Book</div></a>
 			</div>
 			<div class="item_Pen">
-				<a href="#"><img src="images/lockscreen.jpg" alt="Pen">
+				<a href="#"><img src="images/Pen_category.jpg" alt="Pen">
 					<div class="text">Pen</div></a>
 			</div>
 			<div class="item_Bag">
-				<a href="#"> <img src="images/sukuna-purple-5120x2880-16958.png"
-					alt="Bag">
-					<div class="text">Bag</div></a>
+				<a href="#"> <img src="images/Book_category.jpg" alt="Book">
+					<div class="text">Book</div></a>
 			</div>
 			<div class="item_Pencil">
-				<a href="#"> <img
-					src="images/wallpapersden.com_horseman-in-forest-dark-night_1920x1080.jpg"
-					alt="Pencil">
+				<a href="#"> <img src="images/Pencile_category.jpg" alt="Pencil">
 					<div class="text">Pencil</div></a>
 			</div>
 

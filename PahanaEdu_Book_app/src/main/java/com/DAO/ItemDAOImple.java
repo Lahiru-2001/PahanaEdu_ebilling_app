@@ -90,23 +90,21 @@ public class ItemDAOImple implements ItemDAO {
 			return ps.executeUpdate() == 1;
 		}
 	}
-	
+
 	@Override
 	public boolean updateItem(Item item) throws Exception {
-	    String sql = "UPDATE items SET name=?, description=?, category=?, image=?, price=?, stock_quantity=?, status=? WHERE item_id=?";
-	    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-	        ps.setString(1, item.getName());
-	        ps.setString(2, item.getDescription());
-	        ps.setString(3, item.getCategory());
-	        ps.setString(4, item.getImage());
-	        ps.setBigDecimal(5, item.getPrice());
-	        ps.setInt(6, item.getStock_quantity());
-	        ps.setString(7, item.getStatus());
-	        ps.setInt(8, item.getItem_id());
-	        return ps.executeUpdate() == 1;
-	    }
+		String sql = "UPDATE items SET name=?, description=?, category=?, image=?, price=?, stock_quantity=?, status=? WHERE item_id=?";
+		try (PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setString(1, item.getName());
+			ps.setString(2, item.getDescription());
+			ps.setString(3, item.getCategory());
+			ps.setString(4, item.getImage());
+			ps.setBigDecimal(5, item.getPrice());
+			ps.setInt(6, item.getStock_quantity());
+			ps.setString(7, item.getStatus());
+			ps.setInt(8, item.getItem_id());
+			return ps.executeUpdate() == 1;
+		}
 	}
 
-
 }
-

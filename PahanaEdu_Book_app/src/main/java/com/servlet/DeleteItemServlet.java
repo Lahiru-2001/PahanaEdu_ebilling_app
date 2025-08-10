@@ -15,7 +15,8 @@ import com.DB.DBConnecter;
 
 @WebServlet("/delete_item")
 public class DeleteItemServlet extends HttpServlet {
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		try {
 			int itemId = Integer.parseInt(request.getParameter("item_id"));
 			ItemDAO dao = new ItemDAOImple(DBConnecter.getConnection());

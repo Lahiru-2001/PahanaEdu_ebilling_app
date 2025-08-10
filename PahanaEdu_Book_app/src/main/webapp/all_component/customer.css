@@ -59,7 +59,7 @@
 	gap: 10px;
 }
 
-.manual-btn {
+ .manual-btn {
 	border: 2px solid #ffffff;
 	padding: 6px;
 	border-radius: 50%;
@@ -69,7 +69,7 @@
 
 .manual-btn:hover {
 	background-color: #ffffff;
-}
+} 
 
 .line_hr {
 	border: none;
@@ -86,16 +86,15 @@
 }
 
 #items_sider .carousel h3 {
-    font-size: 28px;
-    margin-bottom: 30px;
-    color: #333;
-    text-align: center;
-    font-weight: 600;
-    letter-spacing: 1px;
-    padding: 10px 0;
-    border-bottom: 2px solid #e0e0e0; /* optional line under heading */
+	font-size: 28px;
+	margin-bottom: 30px;
+	color: #333;
+	text-align: center;
+	font-weight: 600;
+	letter-spacing: 1px;
+	padding: 10px 0;
+	border-bottom: 2px solid #e0e0e0; /* optional line under heading */
 }
-
 
 #items_sider .carousel-inner-wrapper {
 	overflow-x: hidden;
@@ -155,10 +154,7 @@
 	font-size: 28px;
 	margin-bottom: 30px;
 	color: #333;
-	    
-  
-    font-weight: 600;
-
+	font-weight: 600;
 }
 
 /* Grid container */
@@ -211,17 +207,76 @@
 }
 
 .item_school_book {
-    background-color: #5c6bc0; /* Indigo */
+	background-color: #5c6bc0; /* Indigo */
 }
 
 .item_Pen {
-    background-color: #26a69a; /* Teal */
+	background-color: #26a69a; /* Teal */
 }
 
 .item_Bag {
-    background-color: #ef5350; /* Red */
+	background-color: #ef5350; /* Red */
 }
 
 .item_Pencil {
-    background-color: #ffa726; /* Orange */
+	background-color: #ffa726; /* Orange */
 }
+
+/* customer help page css start  */
+
+/* Help Card Styling */
+#help_card {
+	background-color: #f9f9f9;
+	border-left: 6px solid #28a745;
+	border-radius: 10px;
+	padding: 20px;
+}
+
+/* Welcome Card Styling */
+#welcom_card {
+	background-color: #fff0e1;
+	border-left: 6px solid #ff8c00;
+	border-radius: 10px;
+	padding: 20px;
+}
+
+/* Form Label Styling */
+.form-label {
+	font-weight: 600;
+	color: #333;
+}
+
+/* Submit Button Styling */
+.btn-success {
+	background-color: #28a745;
+	border-color: #28a745;
+	font-weight: 500;
+	padding: 10px 25px;
+}
+
+.btn-success:hover {
+	background-color: #f9f9f9;
+	border-color: #1e7e34;
+}
+
+/* Section Background */
+#card_slider {
+	background: linear-gradient(to right, #f0f4f7, #e0eafc);
+	padding: 50px 0;
+}
+
+/* Responsive Spacing */
+@media ( max-width : 768px) {
+	#help_card, #welcom_card {
+		margin-bottom: 20px;
+	}
+}
+
+/* customer help page css end */
+
+/* customer profile start */
+
+
+
+
+/* customer profile end */
