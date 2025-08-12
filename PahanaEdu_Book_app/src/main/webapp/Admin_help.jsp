@@ -9,7 +9,6 @@
 <title>Admin - View Help Messages</title>
 <%@ include file="all_component/all_css.jsp"%>
 <style>
-/* Container styling */
 .container {
     max-width: 1200px;
     margin: 30px auto;
@@ -53,6 +52,14 @@ table th {
     padding: 6px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+.status-unread {
+    color: #e74c3c;
+    font-weight: bold;
+}
+.status-read {
+    color: #27ae60;
+    font-weight: bold;
 }
 .modal {
     display: none;
@@ -129,6 +136,7 @@ textarea {
                     <th>Help Title</th>
                     <th>Message</th>
                     <th>Date</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -142,7 +150,7 @@ textarea {
 
         String filterDate = request.getParameter("date");
         String sql = "SELECT c.customer_id, c.first_name, c.last_name, c.account_number, c.address, c.phone_number, "
-                + "h.title, h.content, h.created_at, h.help_id "
+                + "h.title, h.content, h.created_at, h.help_id, h.status "
                 + "FROM help h "
                 + "INNER JOIN customers c ON h.customer_id = c.customer_id ";
 
@@ -150,7 +158,8 @@ textarea {
             sql += "WHERE DATE(h.created_at) = ? ";
         }
 
-        sql += "ORDER BY h.created_at DESC";
+        // Sort by status (unread first), then date desc
+        sql += "ORDER BY (CASE WHEN h.status = 'unread' THEN 0 ELSE 1 END), h.created_at DESC";
 
         ps = conn.prepareStatement(sql);
 
@@ -170,6 +179,7 @@ textarea {
             String title = rs.getString("title");
             String message = rs.getString("content");
             String date = rs.getString("created_at");
+            String status = rs.getString("status");
             int helpId = rs.getInt("help_id");
             int customerId = rs.getInt("customer_id");
     %>
@@ -181,8 +191,15 @@ textarea {
             <td><%= title %></td>
             <td><%= message %></td>
             <td><%= date %></td>
+            <td class="<%= "unread".equalsIgnoreCase(status) ? "status-unread" : "status-read" %>">
+                <%= status %>
+            </td>
             <td>
-                <button class="btn btn-view" onclick="openModal(<%= helpId %>, <%= customerId %>)">Reply</button>
+                <% if ("unread".equalsIgnoreCase(status)) { %>
+                    <button class="btn btn-view" onclick="openModal(<%= helpId %>, <%= customerId %>)">Reply</button>
+                <% } else { %>
+                    <span style="color:gray;">Replied</span>
+                <% } %>
                 <button class="btn btn-delete" onclick="deleteMessage('<%= helpId %>')">Delete</button>
             </td>
         </tr>
@@ -191,7 +208,7 @@ textarea {
         if (!hasRows) {
     %>
         <tr>
-            <td colspan="8" class="text-center text-muted">No items found.</td>
+            <td colspan="9" class="text-center text-muted">No items found.</td>
         </tr>
     <%
         }
@@ -251,6 +268,7 @@ textarea {
             .then(response => response.text())
             .then(data => {
                 alert(data);
+                location.reload(); // reload table after reply
                 closeModal();
             })
             .catch(err => {

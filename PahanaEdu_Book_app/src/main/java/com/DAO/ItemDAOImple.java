@@ -27,6 +27,8 @@ public class ItemDAOImple implements ItemDAO {
 			return ps.executeUpdate() == 1;
 		}
 	}
+	
+
 
 	@Override
 	public boolean isItemNameExists(String name) throws Exception {

@@ -3,11 +3,18 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page session="true"%>
-
-<%@ page import="java.sql.Connection"%>
+<%@ page import="java.util.List"%>
 <%@ page import="com.DB.DBConnecter"%>
-<%-- <%@ page import="com.servlet.Login_servlet"%>
-<%@ page import="com.entity.User, com.entity.Customer"%> --%>
+<%@ page import="com.DAO.ItemDAO"%>
+<%@ page import="com.DAO.ItemDAOImple"%>
+<%@ page import="com.entity.Item"%>
+
+<%
+// Fetch all items from DB
+ItemDAO itemDAO = new ItemDAOImple(DBConnecter.getConnection());
+List<Item> itemsList = itemDAO.getAllItems();
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,41 +30,15 @@
 <meta charset="UTF-8">
 <title>Customer-Home Page</title>
 </head>
-<style>
+
+<style>/* Container styling */
 </style>
+
 <body>
 	<%@include file="all_component/navbar.jsp"%>
 
-	<%-- 
-	<c:out value="${sessionScope}" />
-	
-
-	<h2>Welcome, ${sessionScope.firstName} ${sessionScope.lastName}</h2>
-	<p>Account Number: ${sessionScope.accountNumber}</p>
-	<p>Customer ID: ${sessionScope.customerId}</p>
-	<!-- other customer data --> --%>
 
 
-
-	<!-- Authorization guard: redirect if not logged in or not a customer -->
-	<c:choose>
-		<c:when
-			test="${empty sessionScope.loggedUser or sessionScope.role != 'customer'}">
-			<c:redirect url="index.jsp" />
-		</c:when>
-		<c:otherwise>
-			<c:if test="${not empty sessionScope.customer}">
-				<h2>Welcome, ${sessionScope.customer.firstName}
-					${sessionScope.customer.lastName}</h2>
-				<p>Account Number: ${sessionScope.customer.accountNumber}</p>
-				<p>Customer ID: ${sessionScope.customer.customerId}</p>
-				<!-- other customer data -->
-			</c:if>
-			<c:if test="${empty sessionScope.customer}">
-				<p>Customer details are not available. Please contact support.</p>
-			</c:if>
-		</c:otherwise>
-	</c:choose>
 
 	<section id="card_slider" class="my-5">
 		<div class="container">
@@ -126,45 +107,47 @@
 
 	<hr class="line_hr">
 
-
-
-
-
-
 	<section id="items_sider">
-		<div class="container mt-5">
-			<h2 class="text-center mb-4">All Products</h2>
-			<div class="row">
+		<h2 class="text-center mb-4">All Products</h2>
 
-				<c:forEach var="item" items="${items}">
-					<div class="col-md-3 mb-4">
-						<div class="card shadow">
-							<img src="item_img/${item.image}" class="card-img-top"
-								alt="${item.name}" style="height: 200px; object-fit: cover;">
-							<div class="card-body">
-								<h5 class="card-title">${item.name}</h5>
-								<p class="card-text">
-									<strong>Price:</strong> $${item.price}<br> <strong>Stock:</strong>
-									${item.stock_quantity}<br> <strong>Category:</strong>
-									${item.category}<br> <strong>Description:</strong>
-									${item.description}
-								</p>
-								<button class="btn btn-primary btn-sm">Add to Cart</button>
-							</div>
-						</div>
-					</div>
-				</c:forEach>
 
+		<div class="product-grid" id="productGrid">
+			<%
+			if (itemsList != null && !itemsList.isEmpty()) {
+				for (Item item : itemsList) {
+			%>
+			<div class="card">
+				<img src="<%=item.getImage()%>" alt="<%=item.getName()%>">
+				<h1><%=item.getName()%></h1>
+				<p class="price">
+					Rs:<%=item.getPrice()%></p>
+				<p class="stock_quantity">
+					Stock:
+					<%=item.getStock_quantity()%></p>
+				<p class="category">
+					Category:
+					<%=item.getCategory()%></p>
+				<p class="description"><%=item.getDescription()%></p>
+				<div>
+
+					<a href="Customer_All_items.jsp" class="btn btn-primary btn-sm">Shop
+						Now</a>
+
+				</div>
 			</div>
+			<%
+			}
+			} else {
+			%>
+			<p>No products found.</p>
+			<%
+			}
+			%>
 		</div>
 
-		<!-- Arrow controls -->
-		<div class="carousel-controls">
-			<button onclick="prev()">&#10094;</button>
-			<button onclick="next()">&#10095;</button>
-		</div>
+
+
 	</section>
-
 
 
 	<br>

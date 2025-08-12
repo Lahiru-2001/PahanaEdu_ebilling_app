@@ -1,8 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.sql.Connection"%>
+<%@ page import="java.util.List"%>
 <%@ page import="com.DB.DBConnecter"%>
+<%@ page import="com.DAO.ItemDAO"%>
+<%@ page import="com.DAO.ItemDAOImple"%>
+<%@ page import="com.entity.Item"%>
 
+<%
+// Fetch all items from DB
+ItemDAO itemDAO = new ItemDAOImple(DBConnecter.getConnection());
+List<Item> itemsList = itemDAO.getAllItems();
+%>
 
 <!DOCTYPE html>
 <html>
@@ -88,35 +97,45 @@
 	<br>
 
 	<section id="items_sider">
-		<div class="container mt-5">
-			<h2 class="text-center mb-4">All Products</h2>
-			<div class="row">
+	<h2 class="text-center mb-4">All Products</h2>
 
 
-				<div class="col-md-3 mb-4">
-					<div class="card shadow">
-						<img src="" class="card-img-top" alt=""
-							style="height: 200px; object-fit: cover;">
-						<div class="card-body">
-							<h5 class="card-title">${item.name}</h5>
-							<p class="card-text">
-								<strong>Price:</strong><br> <strong>Stock:</strong> <br>
-								<strong>Category:</strong> <br> <strong>Description:</strong>
-							</p>
-							<button class="btn btn-primary btn-sm">Add to Cart</button>
+				<div class="product-grid" id="productGrid">
+					<%
+					if (itemsList != null && !itemsList.isEmpty()) {
+						for (Item item : itemsList) {
+					%>
+					<div class="card">
+						<img src="<%=item.getImage()%>" alt="<%=item.getName()%>">
+						<h1><%=item.getName()%></h1>
+						<p class="price">
+							Rs:<%=item.getPrice()%></p>
+						<p class="stock_quantity">
+							Stock:
+							<%=item.getStock_quantity()%></p>
+						<p class="category">
+							Category:
+							<%=item.getCategory()%></p>
+						<p class="description"><%=item.getDescription()%></p>
+						<div>
+
+							<a href="Login.jsp" class="btn btn-primary btn-sm">Shop
+								Now</a>
+
 						</div>
 					</div>
+					<%
+					}
+					} else {
+					%>
+					<p>No products found.</p>
+					<%
+					}
+					%>
 				</div>
+	
+	
 
-
-			</div>
-		</div>
-
-		<!-- Arrow controls -->
-		<div class="carousel-controls">
-			<button onclick="prev()">&#10094;</button>
-			<button onclick="next()">&#10095;</button>
-		</div>
 	</section>
 
 
