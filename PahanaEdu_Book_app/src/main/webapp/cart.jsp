@@ -187,6 +187,23 @@
 						<!-- Right Column - Cart Table -->
 						<div class="col-lg-8">
 							<div class="cart-section">
+								<%
+								String successMessage = (String) session.getAttribute("successMessage");
+								String errorMessage = (String) session.getAttribute("errorMessage");
+								if (successMessage != null) {
+								%>
+								<div class="alert alert-success"><%=successMessage%></div>
+								<%
+								session.removeAttribute("successMessage");
+								}
+								if (errorMessage != null) {
+								%>
+								<div class="alert alert-danger"><%=errorMessage%></div>
+								<%
+								session.removeAttribute("errorMessage");
+								}
+								%>
+
 								<h2>Products Cart</h2>
 								<table id="cartTable">
 									<thead>
@@ -244,8 +261,11 @@
 								<div class="buttons-container">
 									<button type="button" class="btn-add" onclick="addItems()">Add
 										Items</button>
-									<button type="button" class="btn-process"
-										onclick="processCart()">Process</button>
+									<form action="ProcessCartServlet" method="post"
+										style="display: inline;">
+										<button type="submit" class="btn-process">Process</button>
+									</form>
+
 								</div>
 							</div>
 						</div>
@@ -290,10 +310,11 @@ function addItems() {
 }
 
 
-function processCart() {
-    alert('Processing your order. Total: Rs. ' + document.getElementById('totalPrice').textContent);
+function confirmProcess() {
+    if (confirm("Do you want to process this order?")) {
+        document.getElementById('processForm').submit();
+    }
 }
-
 window.onload = updateTotal;
 </script>
 

@@ -233,7 +233,8 @@ textarea {
             <button class="btn-send" onclick="sendReply()">Send</button>
         </div>
     </div>
-
+<br>
+<br>
     <%@ include file="all_component/footer.jsp"%>
 
     <script>
