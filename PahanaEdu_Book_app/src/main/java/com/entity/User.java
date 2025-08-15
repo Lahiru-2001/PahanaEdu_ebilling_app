@@ -5,8 +5,8 @@ public class User {
 	private int user_id;
 	private String username;
 	private String passwordHash;
-	private String role; // "admin" or "customer"
-	private String status; // e.g., "Active"
+	private String role; 
+	private String status; 
 
 	public int getUser_id() {
 		return user_id;

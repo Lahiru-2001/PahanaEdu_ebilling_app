@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
 <%@ page import="com.DB.DBConnecter"%>
 <%@ page import="com.DAO.ItemDAO"%>
@@ -7,25 +7,31 @@
 <%@ page import="com.entity.Item"%>
 
 <%
-// Fetch all items from DB
+// Create an instance of ItemDAO implementation and connect to DB
 ItemDAO itemDAO = new ItemDAOImple(DBConnecter.getConnection());
+
+// Retrieve all items from the database
 List<Item> itemsList = itemDAO.getAllItems();
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Index-All Items</title>
+<title>Index-All Items Page</title>
+
+<!-- Include external CSS styles -->
 <%@ include file="all_component/all_css.jsp"%>
+
 <style>
-/* Container */
+/* ======= Page Content Styling ======= */
 .content {
 	max-width: 1200px;
 	margin: auto;
 	padding: 20px;
 }
 
-/* Header */
+/* Header section with title and search bar */
 .header {
 	display: flex;
 	justify-content: space-between;
@@ -38,7 +44,7 @@ List<Item> itemsList = itemDAO.getAllItems();
 	font-weight: bold;
 }
 
-/* Search Bar */
+/* Search bar styling */
 .search-bar {
 	display: flex;
 	gap: 10px;
@@ -63,7 +69,7 @@ List<Item> itemsList = itemDAO.getAllItems();
 	background-color: #0056b3;
 }
 
-/* Grid Layout */
+/* ======= Product Grid Styling ======= */
 .product-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -71,7 +77,7 @@ List<Item> itemsList = itemDAO.getAllItems();
 	margin-top: 20px;
 }
 
-/* Product Card */
+/* Product Card styling */
 .card {
 	border: 1px solid #ddd;
 	border-radius: 10px;
@@ -120,7 +126,7 @@ List<Item> itemsList = itemDAO.getAllItems();
 	min-height: 40px;
 }
 
-/* Quantity & Button */
+/* Quantity input styling */
 .qty-input {
 	width: 60px;
 	padding: 5px;
@@ -130,6 +136,7 @@ List<Item> itemsList = itemDAO.getAllItems();
 	border-radius: 5px;
 }
 
+/* Add to cart button styling */
 .add-cart-btn {
 	background-color: #28a745;
 	color: white;
@@ -143,10 +150,14 @@ List<Item> itemsList = itemDAO.getAllItems();
 	background-color: #218838;
 }
 </style>
+</head>
 <body>
+
+	<!-- Include navigation bar -->
 	<%@ include file="all_component/navbar.jsp"%>
 
 	<div class="content">
+		<!-- Header with title and search bar -->
 		<div class="header">
 			<p>All Products</p>
 			<div class="search-bar">
@@ -154,14 +165,20 @@ List<Item> itemsList = itemDAO.getAllItems();
 				<button onclick="searchItems()">Search</button>
 			</div>
 		</div>
+
+		<!-- Main product list container -->
 		<div class="card shadow">
 			<div class="card-body">
 
+				<!-- Product grid -->
 				<div class="product-grid" id="productGrid">
 					<%
+					// Check if product list is not empty
 					if (itemsList != null && !itemsList.isEmpty()) {
+						// Loop through each product and display its details
 						for (Item item : itemsList) {
 					%>
+					<!-- Single product card -->
 					<div class="card">
 						<img src="<%=item.getImage()%>" alt="<%=item.getName()%>">
 						<h1><%=item.getName()%></h1>
@@ -175,14 +192,14 @@ List<Item> itemsList = itemDAO.getAllItems();
 							<%=item.getCategory()%></p>
 						<p class="description"><%=item.getDescription()%></p>
 						<div>
-							
-							<a href="Login.jsp" class="btn btn-primary btn-sm">Shop
-								Now</a>
+							<!-- Redirect to Login page when clicking Shop Now -->
+							<a href="Login.jsp" class="btn btn-primary btn-sm">Shop Now</a>
 						</div>
 					</div>
 					<%
 					}
 					} else {
+					// If no products found, display message
 					%>
 					<p>No products found.</p>
 					<%
@@ -193,16 +210,21 @@ List<Item> itemsList = itemDAO.getAllItems();
 		</div>
 	</div>
 
+	<!-- Include footer -->
 	<%@ include file="all_component/footer.jsp"%>
 
+	<!-- JavaScript function for searching products -->
 	<script>
     function searchItems() {
         let input = document.getElementById('searchInput').value.toLowerCase();
         let cards = document.querySelectorAll('#productGrid .card');
+
         cards.forEach(card => {
             let name = card.querySelector('h1').textContent.toLowerCase();
             let category = card.querySelector('.category').textContent.toLowerCase();
             let description = card.querySelector('.description').textContent.toLowerCase();
+
+            // Show card if search term matches product name, category, or description
             if (name.includes(input) || category.includes(input) || description.includes(input)) {
                 card.style.display = '';
             } else {
@@ -211,5 +233,6 @@ List<Item> itemsList = itemDAO.getAllItems();
         });
     }
 </script>
+
 </body>
 </html>

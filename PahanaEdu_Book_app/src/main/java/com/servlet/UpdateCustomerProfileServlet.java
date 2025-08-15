@@ -13,48 +13,62 @@ import javax.servlet.http.HttpServletResponse;
 import com.DB.DBConnecter;
 import com.util.PasswordUtil;
 
+// Servlet to handle updating a customer's profile information
 @WebServlet("/UpdateCustomerProfileServlet")
 public class UpdateCustomerProfileServlet extends HttpServlet {
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
 
-		int userId = (int) request.getSession().getAttribute("user_id");
-		String username = request.getParameter("username");
-		String password = request.getParameter("password"); // plain password
-		String account = request.getParameter("account_number"); // Not updated here
-		String fname = request.getParameter("first_name");
-		String lname = request.getParameter("last_name");
-		String phone = request.getParameter("phone_number");
-		String address = request.getParameter("address");
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		try (Connection conn = DBConnecter.getConnection()) {
+        // Retrieve the logged-in user's ID from the session
+        int userId = (int) request.getSession().getAttribute("user_id");
 
-			// Hash the new password
-			String hashedPassword = PasswordUtil.hashPassword(password);
+        // Collect updated profile data from form parameters
+        String username = request.getParameter("username");
+        String password = request.getParameter("password"); // Plain password from form
+        String account = request.getParameter("account_number"); // Account number is not updated here
+        String fname = request.getParameter("first_name");
+        String lname = request.getParameter("last_name");
+        String phone = request.getParameter("phone_number");
+        String address = request.getParameter("address");
 
-			// Update user table
-			PreparedStatement psUser = conn
-					.prepareStatement("UPDATE users SET username=?, password_hash=? WHERE user_id=?");
-			psUser.setString(1, username);
-			psUser.setString(2, hashedPassword);
-			psUser.setInt(3, userId);
-			psUser.executeUpdate();
+        try (Connection conn = DBConnecter.getConnection()) {
 
-			// Update customer table
-			PreparedStatement psCustomer = conn.prepareStatement(
-					"UPDATE customers SET first_name=?, last_name=?, address=?, phone_number=? WHERE user_id=?");
-			psCustomer.setString(1, fname);
-			psCustomer.setString(2, lname);
-			psCustomer.setString(3, address);
-			psCustomer.setString(4, phone);
-			psCustomer.setInt(5, userId);
-			psCustomer.executeUpdate();
+            // ===========================
+            // Hash the new password before storing
+            // ===========================
+            String hashedPassword = PasswordUtil.hashPassword(password);
 
-			response.sendRedirect("Customer_Profile.jsp?success=true");
+            // ===========================
+            // Update 'users' table with new username and hashed password
+            // ===========================
+            PreparedStatement psUser = conn
+                    .prepareStatement("UPDATE users SET username=?, password_hash=? WHERE user_id=?");
+            psUser.setString(1, username);
+            psUser.setString(2, hashedPassword);
+            psUser.setInt(3, userId);
+            psUser.executeUpdate(); // Execute update
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.sendRedirect("Customer_Profile.jsp?error=true");
-		}
-	}
+            // ===========================
+            // Update 'customers' table with personal details
+            // ===========================
+            PreparedStatement psCustomer = conn.prepareStatement(
+                    "UPDATE customers SET first_name=?, last_name=?, address=?, phone_number=? WHERE user_id=?");
+            psCustomer.setString(1, fname);
+            psCustomer.setString(2, lname);
+            psCustomer.setString(3, address);
+            psCustomer.setString(4, phone);
+            psCustomer.setInt(5, userId);
+            psCustomer.executeUpdate(); // Execute update
+
+            // Redirect to profile page with success flag
+            response.sendRedirect("Customer_Profile.jsp?success=true");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Redirect to profile page with error flag in case of exception
+            response.sendRedirect("Customer_Profile.jsp?error=true");
+        }
+    }
 }

@@ -7,7 +7,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Admin - View Items</title>
+    <title>Admin - View Items Page</title>
     <%@ include file="all_component/all_css.jsp" %>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
 </head>

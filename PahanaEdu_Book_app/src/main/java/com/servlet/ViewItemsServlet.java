@@ -13,17 +13,32 @@ import com.DAO.ItemDAOImple;
 import com.DB.DBConnecter;
 import com.entity.Item;
 
-@WebServlet("/view_items")
+/**
+ * Servlet to retrieve and display all items from the database.
+ */
+@WebServlet("/view_items") // URL mapping to trigger this servlet(Admin_View_Item.jsp)
 public class ViewItemsServlet extends HttpServlet {
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		try {
-			ItemDAO dao = new ItemDAOImple(DBConnecter.getConnection());
-			List<Item> itemList = dao.getAllItems();
-			request.setAttribute("items", itemList);
-		} catch (Exception e) {
-			request.setAttribute("error", "Failed to load items.");
-		}
-		request.getRequestDispatcher("Admin_View_Item.jsp").forward(request, response);
-	}
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            // Create DAO instance for interacting with the items table
+            ItemDAO dao = new ItemDAOImple(DBConnecter.getConnection());
+
+            // Retrieve all items from the database
+            List<Item> itemList = dao.getAllItems();
+
+            // Store the list of items in the request scope for use in the JSP
+            request.setAttribute("items", itemList);
+
+        } catch (Exception e) {
+            // If there's any error, set an error message to be displayed in JSP
+            request.setAttribute("error", "Failed to load items.");
+        }
+
+        // Forward the request to the admin view page (JSP) for rendering
+        request.getRequestDispatcher("Admin_View_Item.jsp").forward(request, response);
+    }
 }

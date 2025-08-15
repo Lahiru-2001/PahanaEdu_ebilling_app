@@ -10,13 +10,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <%@ include file="all_component/all_css.jsp"%>
-<title>Admin - Add New Items</title>
+
+<title>Admin - Add New Items Page</title>
 <style>
-/* small enhancement: image preview box */
 #imagePreview {
-	max-width: 100%;
-	max-height: 180px;
-	object-fit: contain;
+	max-width: 100%; /* Fit inside container */
+	max-height: 180px; /* Limit height */
+	object-fit: contain; /* Preserve aspect ratio */
 	border: 1px solid #dee2e6;
 	padding: 4px;
 	border-radius: 4px;
@@ -24,34 +24,39 @@
 }
 
 .hidden {
-	display: none !important;
+	display: none !important; /* Class to hide elements */
 }
 </style>
 </head>
 
 <body>
 	<%@ include file="all_component/navbar.jsp"%>
+	<!-- Navbar include -->
 
 	<div class="container mt-4">
 		<div class="row">
 			<div class="col">
-
 				<div class="card shadow">
 					<div class="card-body">
 						<h4 class="card-title mb-4">Add New Items</h4>
 
+						<!-- Display error messages from backend -->
 						<c:if test="${not empty error}">
 							<div class="alert alert-danger" role="alert">${error}</div>
 						</c:if>
 
+						<!-- Display success messages from backend -->
 						<c:if test="${not empty success}">
 							<div class="alert alert-success" role="alert">${success}</div>
 						</c:if>
 
 						<hr>
+
+						<!-- Form to add a new item -->
 						<form action="add_new_item" method="post" id="add_new_item"
 							novalidate enctype="multipart/form-data" class="needs-validation">
 
+							<!-- Item Name and Description -->
 							<fieldset class="pb-3 mb-3">
 								<div class="row g-3">
 									<div class="col-md-4">
@@ -68,6 +73,8 @@
 								</div>
 							</fieldset>
 							<hr>
+
+							<!-- Category selection and image upload -->
 							<fieldset class="pb-3 mb-3">
 								<div class="row g-3">
 									<div class="col-md-4">
@@ -78,6 +85,8 @@
 											<option value="">-- Select --</option>
 											<option value="school_book">School Book</option>
 											<option value="pen_pencil">Pen/Pencil</option>
+											<option value="pencil_sharpener">Pencil Sharpener</option>
+											<option value="eraser">Eraser</option>
 											<option value="school_bag">School Bag</option>
 											<option value="other">Other</option>
 										</select>
@@ -92,11 +101,9 @@
 											accept="image/png, image/jpeg" aria-describedby="imageHelp" />
 										<div id="imageHelp" class="form-text">Allowed: JPG/PNG.
 											Max size: 2MB. Preview below.</div>
-
 									</div>
 
-
-
+									<!-- Image preview and size error -->
 									<div class="col-md-4">
 										<div class="mt-2">
 											<c:choose>
@@ -117,6 +124,8 @@
 								</div>
 							</fieldset>
 							<hr>
+
+							<!-- Price and Stock Quantity -->
 							<fieldset class="pb-3 mb-3">
 								<div class="row g-3">
 									<div class="col-md-2">
@@ -142,8 +151,11 @@
 								</div>
 							</fieldset>
 							<hr>
+
+							<!-- Hidden field for action -->
 							<input type="hidden" id="action" name="action" value="add" />
 
+							<!-- Submit button -->
 							<button type="submit" class="btn btn-info">Add</button>
 						</form>
 						<!-- End Form -->
@@ -155,7 +167,7 @@
 
 	<%@ include file="all_component/footer.jsp"%>
 
-	<!-- Validation + image preview script -->
+	<!-- Image Preview and Client-side Validation Script -->
 	<script>
 		(function() {
 			const form = document.getElementById('add_new_item');
@@ -164,18 +176,19 @@
 			const sizeError = document.getElementById('imageSizeError');
 			const MAX_SIZE = 2 * 1024 * 1024; // 2MB
 
-			// Image preview and size check
+			// Event listener for image selection
 			imageInput.addEventListener('change', function() {
-				sizeError.classList.add('visually-hidden');
+				sizeError.classList.add('visually-hidden'); // Hide size error by default
 				const file = this.files[0];
 				if (!file)
 					return;
 
-				if (file.size > MAX_SIZE) {
-					sizeError.classList.remove('visually-hidden');
-					preview.classList.add('hidden');
+				if (file.size > MAX_SIZE) { // Check file size
+					sizeError.classList.remove('visually-hidden'); // Show error
+					preview.classList.add('hidden'); // Hide preview
 					preview.removeAttribute('src');
 				} else {
+					// Display preview
 					const reader = new FileReader();
 					reader.onload = function(e) {
 						preview.src = e.target.result;

@@ -7,217 +7,165 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>My Orders</title>
+<title>Customer-Oders View Page</title>
+
+
 <%@include file="all_component/all_css.jsp"%>
+
 <style>
-body {
-	font-family: "Segoe UI", Tahoma, sans-serif;
-	background: #f2f4f7;
-	margin: 0;
-	padding: 0;
-	color: #333;
-}
-
-h2 {
-	margin-bottom: 20px;
-	color: #2563eb;
-	font-size: 24px;
-	border-bottom: 2px solid #cbd5e1;
-	padding-top: 20px;
-	margin-left: 90px;
-}
-
-.order-card {
-	background: #ffffff;
-	border-radius: 12px;
-	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-	margin-bottom: 100px;
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
-	padding: 40px 20px;
-	max-width: 1200px;
-	margin: 30px;
-margin-left: 90px;
-	
-	
-}
-
-.order-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	border-bottom: 1px solid #e5e7eb;
-	padding-bottom: 10px;
-	margin-bottom: 18px;
-	font-size: 16px;
-	font-weight: 600;
-	color: #1e293b;
-}
-
-.items-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-top: 12px;
-}
-
-.items-table th, .items-table td {
-	padding: 12px;
-	text-align: left;
-	border-bottom: 1px solid #e2e8f0;
-	font-size: 15px;
-}
-
-.items-table th {
-	background-color: #f1f5f9;
-	color: #1e293b;
-	font-weight: 600;
-}
-
-.total {
-	text-align: right;
-	font-weight: 600;
-	margin-top: 15px;
-	font-size: 16px;
-	color: #111827;
-	border-top: 1px solid #e5e7eb;
-	padding-top: 10px;
-}
-
-@media ( max-width :768px) {
-	.order-header {
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 5px;
-	}
-	.items-table th, .items-table td {
-		font-size: 14px;
-		padding: 8px;
-	}
-	.total {
-		font-size: 15px;
-	}
-}
+    /* Styling for message when no orders are found */
+    .no-orders {
+        color: red;
+        text-align: center;
+        font-weight: bold;
+        padding: 10px;
+    }
 </style>
 </head>
 <body>
-	<%@include file="all_component/navbar.jsp"%>
 
-	<div class="card-shadow">
-		<div class="card-body">
+<!-- Include navigation bar -->
+<%@include file="all_component/navbar.jsp"%>
+
+<div class="card-shadow">
+	<div class="card-body">
+
+		<%
+		// Database connection and statement/result objects
+		Connection con = null;
+		PreparedStatement psBill = null, psItems = null;
+		ResultSet rsBill = null, rsItems = null;
+
+		// Retrieve logged-in customer's ID from session
+		Integer customerId = (Integer) session.getAttribute("customerId");
+
+		// If user is not logged in, show message and stop execution
+		if (customerId == null) {
+			out.println("<p style='color:red;'>You must be logged in to view your orders.</p>");
+			return;
+		}
+
+		// Define order statuses to display
+		String[] statuses = { "Orders Confirm", "processing" };
+
+		try {
+			// Get DB connection
+			con = DBConnecter.getConnection();
+
+			// Loop through each status and display orders for that status
+			for (String status : statuses) {
+		%>
+		<div class="orders-section">
+			<!-- Display status heading -->
+			<h2 class="order-h2"><%=status%></h2>
 
 			<%
-			Connection con = null;
-			PreparedStatement psBill = null, psItems = null;
-			ResultSet rsBill = null, rsItems = null;
+			// Query to retrieve bills/orders for the logged-in customer with the current status
+			psBill = con.prepareStatement(
+				"SELECT * FROM processing_bills pb " +
+				"JOIN customers c ON pb.customer_id = c.customer_id " +
+				"WHERE pb.status = ? AND pb.customer_id = ? " +
+				"ORDER BY pb.order_date DESC"
+			);
+			psBill.setString(1, status);
+			psBill.setInt(2, customerId);
+			rsBill = psBill.executeQuery();
 
-			// Map to store statuses we want to show
-			String[] statuses = { "Orders Confirm", "processing" };
+			boolean hasOrders = false; // Track if there are any orders for this status
 
-			try {
-				con = DBConnecter.getConnection();
-
-				for (String status : statuses) {
+			// Loop through each bill/order
+			while (rsBill.next()) {
+				hasOrders = true;
+				int billId = rsBill.getInt("bill_id");
+				Timestamp orderDate = rsBill.getTimestamp("order_date");
 			%>
-			<div class="orders-section">
-				<h2><%=status%></h2>
-
-				<%
-				// Fetch all bills with the current status
-				psBill = con.prepareStatement(
-						"SELECT * FROM processing_bills pb JOIN customers c ON pb.customer_id=c.customer_id WHERE pb.status=? ORDER BY pb.order_date DESC");
-				psBill.setString(1, status.equals("Orders Confirm") ? "Orders Confirm" : "processing");
-				rsBill = psBill.executeQuery();
-
-				while (rsBill.next()) {
-					int billId = rsBill.getInt("bill_id");
-					Timestamp orderDate = rsBill.getTimestamp("order_date");
-				%>
-				<div class="order-card">
-					<div class="order-header">
-						<span>Order #<%=billId%></span> <span>Date: <%=orderDate.toString().substring(0, 10)%></span>
-					</div>
-					<table class="items-table">
-						<thead>
-							<tr>
-								<th>Item Name</th>
-								<th>Category</th>
-								<th>Price</th>
-								<th>Quantity</th>
-								<th>Subtotal</th>
-							</tr>
-						</thead>
-						<tbody>
-							<%
-							// Fetch items for this bill
-							psItems = con.prepareStatement("SELECT * FROM processing_bill_items WHERE bill_id=?");
-							psItems.setInt(1, billId);
-							rsItems = psItems.executeQuery();
-
-							double total = 0;
-
-							while (rsItems.next()) {
-								String itemName = rsItems.getString("item_name");
-								String category = rsItems.getString("category");
-								double price = rsItems.getDouble("item_price");
-								int qty = rsItems.getInt("quantity");
-								double subtotal = rsItems.getDouble("subtotal");
-								total += subtotal;
-							%>
-							<tr>
-								<td><%=itemName%></td>
-								<td><%=category%></td>
-								<td>Rs:<%=String.format("%.2f", price)%></td>
-								<td><%=qty%></td>
-								<td>Rs:<%=String.format("%.2f", subtotal)%></td>
-							</tr>
-							<%
-							} // items loop
-							%>
-						</tbody>
-					</table>
-					<div class="total">
-						Total: Rs:<%=String.format("%.2f", total)%></div>
+			<!-- Single Order Card -->
+			<div class="order-card">
+				<div class="order-header">
+					<!-- Order number and status -->
+					<span>Order #<%=billId%> / <%=status%></span>
+					<!-- Order date -->
+					<span>Date: <%=orderDate.toString().substring(0, 10)%></span>
 				</div>
-				<%
-				} // bills loop
-				%>
+
+				<!-- Items table for this order -->
+				<table class="items-table-order">
+					<thead>
+						<tr>
+							<th>Item Name</th>
+							<th>Category</th>
+							<th>Price</th>
+							<th>Quantity</th>
+							<th>Subtotal</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%
+						// Retrieve all items for this bill
+						psItems = con.prepareStatement(
+							"SELECT * FROM processing_bill_items WHERE bill_id = ?"
+						);
+						psItems.setInt(1, billId);
+						rsItems = psItems.executeQuery();
+
+						double total = 0; // Track total amount for this order
+
+						// Loop through each item in the order
+						while (rsItems.next()) {
+							String itemName = rsItems.getString("item_name");
+							String category = rsItems.getString("category");
+							double price = rsItems.getDouble("item_price");
+							int qty = rsItems.getInt("quantity");
+							double subtotal = rsItems.getDouble("subtotal");
+							total += subtotal; // Add to total
+						%>
+						<tr>
+							<td><%=itemName%></td>
+							<td><%=category%></td>
+							<td>Rs:<%=String.format("%.2f", price)%></td>
+							<td><%=qty%></td>
+							<td>Rs:<%=String.format("%.2f", subtotal)%></td>
+						</tr>
+						<%
+						} // End items loop
+						%>
+					</tbody>
+				</table>
+
+				<!-- Display total amount for this order -->
+				<div class="total">
+					Total: Rs:<%=String.format("%.2f", total)%>
+				</div>
 			</div>
 			<%
-			} // statuses loop
-			} catch (Exception e) {
-			out.println("<p style='color:red'>Error: " + e.getMessage() + "</p>");
-			e.printStackTrace();
-			} finally {
-			try {
-			if (rsItems != null)
-				rsItems.close();
-			} catch (Exception e) {
-			}
-			try {
-			if (psItems != null)
-				psItems.close();
-			} catch (Exception e) {
-			}
-			try {
-			if (rsBill != null)
-				rsBill.close();
-			} catch (Exception e) {
-			}
-			try {
-			if (psBill != null)
-				psBill.close();
-			} catch (Exception e) {
-			}
-			try {
-			if (con != null)
-				con.close();
-			} catch (Exception e) {
-			}
+			} // End bills loop
+
+			// If no orders found for this status, show message
+			if (!hasOrders) {
+				out.println("<p class='no-orders'>Not found</p>");
 			}
 			%>
-
 		</div>
-	</div>
+		<%
+		} // End statuses loop
+		} catch (Exception e) {
+			// Handle errors
+			out.println("<p style='color:red'>Error: " + e.getMessage() + "</p>");
+			e.printStackTrace();
+		} finally {
+			// Close all resources
+			try { if (rsItems != null) rsItems.close(); } catch (Exception e) {}
+			try { if (psItems != null) psItems.close(); } catch (Exception e) {}
+			try { if (rsBill != null) rsBill.close(); } catch (Exception e) {}
+			try { if (psBill != null) psBill.close(); } catch (Exception e) {}
+			try { if (con != null) con.close(); } catch (Exception e) {}
+		}
+		%>
 
-	<%@include file="all_component/footer.jsp"%>
+	</div>
+</div>
+
+<!-- Include footer -->
+<%@include file="all_component/footer.jsp"%>
 </body>
 </html>

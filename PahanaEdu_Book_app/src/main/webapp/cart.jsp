@@ -5,136 +5,30 @@
 <%@ page import="javax.servlet.http.HttpSession"%>
 <%@ page session="true"%>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Customer Cart</title>
+<title>Customer-Cart Page</title>
+
 
 <%@include file="all_component/all_css.jsp"%>
-
-<style>
-.container {
-	max-width: 2000px;
-	margin: auto;
-	padding: 100px;
-}
-
-/* Card style for both sections */
-.card, .cart-section {
-	background: #fff;
-	border-radius: 8px;
-	border: none;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.profile-label {
-	font-weight: 600;
-	margin-top: 10px;
-	display: block;
-	color: #333;
-}
-
-.form-control[readonly] {
-	background-color: #f9f9f9;
-	border: 1px solid #ddd;
-}
-
-.cart-section {
-	padding: 20px;
-}
-
-.cart-section h2 {
-	font-size: 22px;
-	font-weight: 600;
-	margin-bottom: 20px;
-	color: #333;
-}
-
-#cartTable {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-#cartTable th, #cartTable td {
-	padding: 12px;
-	border-bottom: 1px solid #eee;
-	text-align: center;
-}
-
-#cartTable th {
-	background: #f7f7f7;
-	font-weight: 600;
-	color: #444;
-}
-
-.total-row {
-	font-weight: bold;
-	background: #fafafa;
-}
-
-.buttons-container {
-	margin-top: 20px;
-	display: flex;
-	justify-content: flex-end;
-	gap: 10px;
-}
-
-.btn-add, .btn-process, .btn-drop {
-	padding: 8px 16px;
-	border: none;
-	border-radius: 6px;
-	font-size: 14px;
-	cursor: pointer;
-}
-
-.btn-add {
-	background-color: #17a2b8;
-	color: white;
-}
-
-.btn-process {
-	background-color: #28a745;
-	color: white;
-}
-
-.btn-drop {
-	background-color: #dc3545;
-	color: white;
-}
-
-.btn-add:hover {
-	background-color: #138496;
-}
-
-.btn-process:hover {
-	background-color: #218838;
-}
-
-.btn-drop:hover {
-	background-color: #c82333;
-}
-
-@media ( max-width : 991px) {
-	.buttons-container {
-		flex-direction: column;
-		align-items: flex-start;
-	}
-}
-</style>
 </head>
 <body>
 
+	<!-- Include navigation bar -->
 	<%@include file="all_component/navbar.jsp"%>
 
 	<%
+	// Establish database connection
 	Connection conn = DBConnecter.getConnection();
 	PreparedStatement ps = null;
 	ResultSet rs = null;
 
+	// Get logged-in user ID from session
 	int userId = (session.getAttribute("user_id") != null) ? (Integer) session.getAttribute("user_id") : 0;
 
+	// Query to fetch customer details
 	String query = "SELECT u.username, u.password_hash, c.account_number, c.first_name, c.last_name, c.address, c.phone_number "
 			+ "FROM users u JOIN customers c ON u.user_id = c.user_id WHERE u.user_id = ?";
 	String username = "", password = "", account = "", fname = "", lname = "", address = "", phone = "";
@@ -144,6 +38,7 @@
 		ps.setInt(1, userId);
 		rs = ps.executeQuery();
 
+		// Store customer info
 		if (rs.next()) {
 			username = rs.getString("username");
 			password = rs.getString("password_hash");
@@ -157,7 +52,7 @@
 	%>
 
 	<section id="cart">
-		<div class="container">
+		<div class="container-Cat">
 			<div class="card shadow">
 				<div class="card-body">
 					<div class="row">
@@ -188,6 +83,7 @@
 						<div class="col-lg-8">
 							<div class="cart-section">
 								<%
+								// Display session messages for success/error
 								String successMessage = (String) session.getAttribute("successMessage");
 								String errorMessage = (String) session.getAttribute("errorMessage");
 								if (successMessage != null) {
@@ -218,6 +114,7 @@
 									</thead>
 									<tbody id="cartBody">
 										<%
+										// Get cart from session
 										com.DAO.CartImple cart = (com.DAO.CartImple) session.getAttribute("cart");
 										java.math.BigDecimal totalPrice = java.math.BigDecimal.ZERO;
 
@@ -255,9 +152,9 @@
 											<td></td>
 										</tr>
 									</tfoot>
-
 								</table>
 
+								<!-- Cart Action Buttons -->
 								<div class="buttons-container">
 									<button type="button" class="btn-add" onclick="addItems()">Add
 										Items</button>
@@ -265,7 +162,6 @@
 										style="display: inline;">
 										<button type="submit" class="btn-process">Process</button>
 									</form>
-
 								</div>
 							</div>
 						</div>
@@ -275,47 +171,54 @@
 		</div>
 	</section>
 
+	<!-- Include footer -->
 	<%@include file="all_component/footer.jsp"%>
 
+	<!-- JavaScript for cart functionality -->
 	<script>
-function updateQuantity(input) {
-    const tr = input.closest('tr');
-    let qty = parseInt(input.value);
-    if (qty < 1 || isNaN(qty)) {
-        qty = 1;
-        input.value = 1;
-    }
-    const price = parseFloat(tr.querySelector('.price').textContent);
-    tr.querySelector('.subtotal').textContent = (price * qty).toFixed(2);
-    updateTotal();
-}
-
-function dropItem(button) {
-    if (confirm('Remove this item from the cart?')) {
-        button.closest('tr').remove();
+    // Update subtotal when quantity changes
+    function updateQuantity(input) {
+        const tr = input.closest('tr');
+        let qty = parseInt(input.value);
+        if (qty < 1 || isNaN(qty)) {
+            qty = 1;
+            input.value = 1;
+        }
+        const price = parseFloat(tr.querySelector('.price').textContent);
+        tr.querySelector('.subtotal').textContent = (price * qty).toFixed(2);
         updateTotal();
     }
-}
 
-function updateTotal() {
-    let total = 0;
-    document.querySelectorAll('.subtotal').forEach(td => {
-        total += parseFloat(td.textContent);
-    });
-    document.getElementById('totalPrice').textContent = total.toFixed(2);
-}
-
-function addItems() {
-    window.location.href = "Customer_All_items.jsp";
-}
-
-
-function confirmProcess() {
-    if (confirm("Do you want to process this order?")) {
-        document.getElementById('processForm').submit();
+    // Remove item from cart
+    function dropItem(button) {
+        if (confirm('Remove this item from the cart?')) {
+            button.closest('tr').remove();
+            updateTotal();
+        }
     }
-}
-window.onload = updateTotal;
+
+    // Update total price of cart
+    function updateTotal() {
+        let total = 0;
+        document.querySelectorAll('.subtotal').forEach(td => {
+            total += parseFloat(td.textContent);
+        });
+        document.getElementById('totalPrice').textContent = total.toFixed(2);
+    }
+
+    // Redirect to all items page
+    function addItems() {
+        window.location.href = "Customer_All_items.jsp";
+    }
+
+    // Confirm before processing order
+    function confirmProcess() {
+        if (confirm("Do you want to process this order?")) {
+            document.getElementById('processForm').submit();
+        }
+    }
+
+    window.onload = updateTotal; // Ensure total is calculated on page load
 </script>
 
 </body>
