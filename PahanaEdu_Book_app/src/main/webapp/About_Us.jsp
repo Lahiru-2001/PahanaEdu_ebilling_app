@@ -35,7 +35,7 @@
 
 					<section class="about">
 
-						<div class="about-content">
+						<div class="about-content"> 
 
 							<div class="luxury-image">
 								<img src="images/Book-Shop-2.jpg" alt="Luxurious Comfort">
