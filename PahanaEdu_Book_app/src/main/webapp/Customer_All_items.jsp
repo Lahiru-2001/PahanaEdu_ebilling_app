@@ -7,9 +7,9 @@
 <%@ page import="com.entity.Item"%>
 
 <%
-// Fetch all items from the database using ItemDAO
-ItemDAO itemDAO = new ItemDAOImple(DBConnecter.getConnection());
-List<Item> itemsList = itemDAO.getAllItems();
+    // Fetch all items from the database using ItemDAO
+    ItemDAO itemDAO = new ItemDAOImple(DBConnecter.getConnection());
+    List<Item> itemsList = itemDAO.getAllItems();
 %>
 
 <!DOCTYPE html>
@@ -29,7 +29,7 @@ List<Item> itemsList = itemDAO.getAllItems();
 		<div class="header">
 			<p>All Products</p>
 			<div class="search-bar">
-				<input type="text" id="searchInput" placeholder="Search products...">
+				<input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchItems()">
 				<button onclick="searchItems()">Search</button>
 			</div>
 		</div>
@@ -75,7 +75,8 @@ List<Item> itemsList = itemDAO.getAllItems();
 						<div>
 							<form action="AddToCartServlet" method="post">
 								<input type="hidden" name="item_id"
-									value="<%=item.getItem_id()%>"> <input type="number"
+									value="<%=item.getItem_id()%>"> 
+								<input type="number"
 									name="quantity" class="qty-input" min="1"
 									max="<%=item.getStock_quantity()%>" value="1">
 								<button type="submit" class="add-cart-btn">Add to Cart</button>
@@ -100,24 +101,25 @@ List<Item> itemsList = itemDAO.getAllItems();
 
 	<!-- JavaScript search functionality -->
 	<script>
-    function searchItems() {
-        let input = document.getElementById('searchInput').value.toLowerCase();
-        // Select all product cards
-        let cards = document.querySelectorAll('#productGrid .card');
-        cards.forEach(card => {
-            // Get product details
-            let name = card.querySelector('h1').textContent.toLowerCase();
-            let category = card.querySelector('.category').textContent.toLowerCase();
-            let description = card.querySelector('.description').textContent.toLowerCase();
-            // Show or hide card based on search input
-            if (name.includes(input) || category.includes(input) || description.includes(input)) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-</script>
+	    function searchItems() {
+	        let input = document.getElementById('searchInput').value.toLowerCase();
+	        // Select all product cards (fixed class name)
+	        let cards = document.querySelectorAll('#productGrid .card-allItems');
+	        cards.forEach(card => {
+	            // Get product details
+	            let name = card.querySelector('h1').textContent.toLowerCase();
+	            let category = card.querySelector('.category').textContent.toLowerCase();
+	            let description = card.querySelector('.description').textContent.toLowerCase();
+	            
+	            // Show or hide card based on search input
+	            if (name.includes(input) || category.includes(input) || description.includes(input)) {
+	                card.style.display = '';
+	            } else {
+	                card.style.display = 'none';
+	            }
+	        });
+	    }
+	</script>
 
 </body>
 </html>

@@ -4,15 +4,11 @@
 <%@ page import="com.DB.DBConnecter"%>
 <%@ page import="javax.servlet.http.HttpSession"%>
 <%@ page session="true"%>
-<!-- Enable HTTP session for storing/retrieving user data -->
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Customer-Profile Page</title>
-
-
 <%@ include file="all_component/all_css.jsp"%>
 </head>
 
@@ -23,7 +19,6 @@ body {
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Card styling for profile container */
 .card {
 	border-radius: 15px;
 	border: none;
@@ -34,7 +29,6 @@ body {
 	padding: 40px;
 }
 
-/* Heading styling */
 h4 {
 	font-weight: 600;
 	color: #333;
@@ -43,14 +37,12 @@ h4 {
 	margin-bottom: 30px;
 }
 
-/* Label styling */
 .profile-label {
 	font-weight: 600;
 	color: #555;
 	margin-top: 10px;
 }
 
-/* Form field styling */
 .form-control {
 	border-radius: 10px;
 	padding: 10px 15px;
@@ -64,19 +56,16 @@ h4 {
 	box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
 }
 
-/* Read-only input styling */
 .form-control[readonly] {
 	background-color: #f0f0f0;
 	border: 1px solid #ddd;
 	cursor: not-allowed;
 }
 
-/* Textarea should not be resizable */
 textarea.form-control {
 	resize: none;
 }
 
-/* Buttons styling */
 .btn-success {
 	padding: 10px 25px;
 	font-size: 16px;
@@ -102,12 +91,15 @@ textarea.form-control {
 	background: #ced4da;
 }
 
-/* Hide elements when needed */
 .d-none {
 	display: none !important;
 }
 
-/* Mobile responsive adjustments */
+.error {
+	color: red;
+	font-size: 14px;
+}
+
 @media screen and (max-width: 768px) {
 	.card-body {
 		padding: 20px;
@@ -121,26 +113,20 @@ textarea.form-control {
 
 <body>
 
-	<!-- Include navigation bar -->
 	<%@ include file="all_component/navbar.jsp"%>
 
 	<%
-	// Database connection setup
 	Connection conn = DBConnecter.getConnection();
 	PreparedStatement ps = null;
 	ResultSet rs = null;
 
-	// Retrieve user_id from session (if logged in)
 	int userId = (session.getAttribute("user_id") != null) ? (Integer) session.getAttribute("user_id") : 0;
 
-	// SQL query to get customer and user data
 	String query = "SELECT u.username, u.password_hash, c.account_number, c.first_name, c.last_name, c.address, c.phone_number "
 			+ "FROM users u JOIN customers c ON u.user_id = c.user_id WHERE u.user_id = ?";
 
-	// Variables to store retrieved profile details
 	String username = "", password = "", account = "", fname = "", lname = "", address = "", phone = "";
 
-	// If user is logged in, fetch their profile details
 	if (userId != 0) {
 		ps = conn.prepareStatement(query);
 		ps.setInt(1, userId);
@@ -158,64 +144,69 @@ textarea.form-control {
 	}
 	%>
 
-	<!-- Profile Section -->
 	<section class="my-5">
 		<div class="container">
 			<div class="card shadow">
 				<div class="card-body">
 					<h4 class="profile-h4">Your Profile</h4>
-
-					<!-- Profile Form -->
+					<%
+					String successMsg = (String) request.getAttribute("successMsg");
+					String errorMsg = (String) request.getAttribute("errorMsg");
+					if (successMsg != null) {
+					%>
+					<div class="alert alert-success alert-dismissible fade show"
+						role="alert">
+						<%=successMsg%>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+					<%
+					} else if (errorMsg != null) {
+					%>
+					<div class="alert alert-danger alert-dismissible fade show"
+						role="alert">
+						<%=errorMsg%>
+						<button type="button" class="btn-close" data-bs-dismiss="alert"
+							aria-label="Close"></button>
+					</div>
+					<%
+					}
+					%>
 					<form id="profileForm" action="UpdateCustomerProfileServlet"
-						method="post">
+						method="post" onsubmit="return validateForm()">
 						<div class="row">
-							<!-- Left column with username & account -->
 							<div class="col-md-6">
 								<label class="profile-label">Username</label> <input type="text"
 									name="username" class="form-control" value="<%=username%>"
-									readonly>
-
-								<!-- Password field (commented out for now) -->
-								<%-- 
-							<div class="input-group">
-								<input type="password" name="password" class="form-control"
-									id="password" value="<%=password%>" readonly>
-								<button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
-									<i class="fas fa-eye" id="eyeIcon"></i>
-								</button>
-							</div>
-							--%>
-
-								<label class="profile-label">Account Number</label> <input
-									type="text" name="account_number" class="form-control"
-									value="<%=account%>" readonly>
+									readonly> <label class="profile-label">Account
+									Number</label> <input type="text" name="account_number"
+									class="form-control" value="<%=account%>" readonly>
 							</div>
 
-							<!-- Right column with personal info -->
 							<div class="col-md-6">
 								<label class="profile-label">First Name</label> <input
-									type="text" name="first_name" class="form-control"
-									value="<%=fname%>" readonly> <label
+									type="text" name="first_name" id="first_name"
+									class="form-control" value="<%=fname%>" readonly> <span
+									class="error" id="fnameError"></span> <label
 									class="profile-label">Last Name</label> <input type="text"
-									name="last_name" class="form-control" value="<%=lname%>"
-									readonly> <label class="profile-label">Phone
-									Number</label> <input type="text" name="phone_number"
-									class="form-control" value="<%=phone%>" readonly> <label
+									name="last_name" id="last_name" class="form-control"
+									value="<%=lname%>" readonly> <span class="error"
+									id="lnameError"></span> <label class="profile-label">Phone
+									Number</label> <input type="number" name="phone_number"
+									id="phone_number" class="form-control" value="<%=phone%>"
+									readonly> <span class="error" id="phoneError"></span> <label
 									class="profile-label">Address</label>
-								<textarea name="address" class="form-control" rows="2" readonly><%=address%></textarea>
+								<textarea name="address" id="address" class="form-control"
+									rows="2" readonly><%=address%></textarea>
+								<span class="error" id="addressError"></span>
 							</div>
 						</div>
 
-						<!-- Action buttons -->
 						<div class="mt-4 text-center">
-							<!-- Edit button -->
 							<button type="button" class="btn btn-success text-white"
-								style="background-color: #28a745" id="editBtn"
-								onclick="enableEditing()">Edit</button>
-
-							<!-- Update button (hidden by default) -->
+								id="editBtn" onclick="enableEditing()">Edit</button>
 							<button type="submit" class="btn btn-success text-white"
-								style="background-color: #28a745" id="updateBtn">Update</button>
+								id="updateBtn">Update</button>
 						</div>
 					</form>
 				</div>
@@ -223,45 +214,63 @@ textarea.form-control {
 		</div>
 	</section>
 
-	<!-- Include footer -->
 	<%@ include file="all_component/footer.jsp"%>
 
 	<script>
-    // On page load, hide the Update button
-    document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("updateBtn").classList.add("d-none");
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("updateBtn").classList.add("d-none");
+});
+
+function enableEditing() {
+    const form = document.getElementById("profileForm");
+    const inputs = form.querySelectorAll("input, textarea");
+
+    inputs.forEach(input => {
+        if (input.name !== "username" && input.name !== "account_number") {
+            input.removeAttribute("readonly");
+            input.style.backgroundColor = "#ffffff";
+        }
     });
 
-    /* Password visibility toggle function (currently unused)
-    function togglePassword() {
-        const pwd = document.getElementById("password");
-        const icon = document.getElementById("eyeIcon");
+    document.getElementById("editBtn").classList.add("d-none");
+    document.getElementById("updateBtn").classList.remove("d-none");
+}
 
-        if (pwd.type === "password") {
-            pwd.type = "text";
-            icon.classList.remove("fa-eye");
-            icon.classList.add("fa-eye-slash");
-        } else {
-            pwd.type = "password";
-            icon.classList.remove("fa-eye-slash");
-            icon.classList.add("fa-eye");
-        }
-    } */
+function validateForm() {
+    let isValid = true;
 
-    // Enable form fields for editing when "Edit" button is clicked
-    function enableEditing() {
-        const form = document.getElementById("profileForm");
-        const inputs = form.querySelectorAll("input, textarea");
+    document.getElementById("fnameError").innerText = "";
+    document.getElementById("lnameError").innerText = "";
+    document.getElementById("phoneError").innerText = "";
+    document.getElementById("addressError").innerText = "";
 
-        inputs.forEach(input => {
-            input.removeAttribute("readonly"); // Allow editing
-            input.style.backgroundColor = "#ffffff"; // Set editable background
-        });
+    const fname = document.getElementById("first_name").value.trim();
+    const lname = document.getElementById("last_name").value.trim();
+    const phone = document.getElementById("phone_number").value.trim();
+    const address = document.getElementById("address").value.trim();
 
-        // Hide Edit button, show Update button
-        document.getElementById("editBtn").classList.add("d-none");
-        document.getElementById("updateBtn").classList.remove("d-none");
+    const nameRegex = /^[A-Za-z\s]{2,30}$/;
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!nameRegex.test(fname)) {
+        document.getElementById("fnameError").innerText = "Enter a valid first name (2–30 letters).";
+        isValid = false;
     }
+    if (!nameRegex.test(lname)) {
+        document.getElementById("lnameError").innerText = "Enter a valid last name (2–30 letters).";
+        isValid = false;
+    }
+    if (!phoneRegex.test(phone)) {
+        document.getElementById("phoneError").innerText = "Enter a valid 10-digit phone number.";
+        isValid = false;
+    }
+    if (address.length < 5) {
+        document.getElementById("addressError").innerText = "Address must be at least 5 characters.";
+        isValid = false;
+    }
+
+    return isValid;
+}
 </script>
 
 </body>
