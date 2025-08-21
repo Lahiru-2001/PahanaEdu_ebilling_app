@@ -8,7 +8,7 @@
     background-color: #81b1ce;
     color: white;
     width: 100%;
-    margin-top: 50px;
+    margin-top: 100px;
     font-size: 0.9rem;
   }
 
